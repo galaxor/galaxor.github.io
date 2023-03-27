@@ -1,8 +1,50 @@
+{% comment %}
+I got this from https://jekyllcodex.org/without-plugin/share-buttons/
+I added the Mastodon share button from https://www.kylereddoch.me/2023/02/20/creating-mastodon-share-button.html
+{% endcomment %}
+
 {% if include.pageurl != nil and include.pageurl != '' %}
     {% assign pageurl = include.pageurl %}
 {% else %}
     {% assign pageurl = page.url %}
 {% endif %}
+
+<script type="text/javascript">
+/* Generate a share link for the user's Mastodon domain */
+function MastodonShare(e){
+    // Gather the source text and URL
+    src = this.getAttribute("data-src");
+
+    // Gather the Mastodon domain
+    domain = prompt("Enter your Mastodon domain. This is the website your Mastodon account is on. For example, mastodon.social, or a2mi.social.", "mastodon.social");
+
+    if (domain == "" || domain == null){
+        return;
+    }
+
+    baredomain = domain.replace(/^https?:\/\/([^\/]*).*$/, '$1');
+
+    // Build the URL
+    url = "https://" + baredomain + "/share?text=" + src;
+
+    // Open a window on the share page
+    window.open(url, '_blank');
+}
+
+/* Call this on document.ready() */
+function enableMastodonShare(){
+    var ele = document.querySelector('#share-buttons a.mastodon');
+    ele.addEventListener('click', MastodonShare);
+    /* Make visible by removing the original display: none */
+    ele.classList.remove('invisible');
+}
+
+document.addEventListener('readystatechange', function () {
+  if (this.readyState === 'interactive') {
+    enableMastodonShare();
+  }
+});
+</script>
 
 <style>
 #share-buttons {display: inline-block; vertical-align: middle; }
@@ -15,6 +57,7 @@
     float: left; 
     text-align: center;
 }
+#share-buttons > a.invisible { display:none; }
 #share-buttons > a > svg {height: 16px; fill: #d5d5d5; margin-top: 10px;}
 #share-buttons > a:hover {cursor: pointer;}
 #share-buttons > a.facebook:hover > svg {fill: #3B5998;}
@@ -24,6 +67,7 @@
 #share-buttons > a.pinterest:hover > svg {fill: #CB2027;}
 #share-buttons > a.mail:hover > svg {fill: #7D7D7D;}
 #share-buttons > a.instagram:hover > svg {fill: #C73B92;}
+#share-buttons > a.mastodon:hover > svg {fill: #6364ff;}
 #share-buttons > a.facebook > svg {height: 18px; margin-top: 9px;}
 #share-buttons > a.twitter > svg {height: 20px; margin-top: 8px;}
 #share-buttons > a.linkedin > svg {height: 19px; margin-top: 7px;}
@@ -36,5 +80,6 @@
     <a target="_blank" class="twitter" title="Share this on Twitter" href="https://twitter.com/intent/tweet?text={{ site.url }}{{ pageurl }}"><svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1684 408q-67 98-162 167 1 14 1 42 0 130-38 259.5t-115.5 248.5-184.5 210.5-258 146-323 54.5q-271 0-496-145 35 4 78 4 225 0 401-138-105-2-188-64.5t-114-159.5q33 5 61 5 43 0 85-11-112-23-185.5-111.5t-73.5-205.5v-4q68 38 146 41-66-44-105-115t-39-154q0-88 44-163 121 149 294.5 238.5t371.5 99.5q-8-38-8-74 0-134 94.5-228.5t228.5-94.5q140 0 236 102 109-21 205-78-37 115-142 178 93-10 186-50z"/></svg></a>
     <a target="_blank" class="linkedin" title="Share this on Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url={{ site.url }}{{ pageurl }}&title={{ page.title|escape }}&summary=&source="><svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/></svg></a>
     <a target="_blank" class="reddit" title="Share this on Reddit" href="https://www.reddit.com/submit?url={{ site.url }}{{ pageurl }}&title={{ page.title|escape }}"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="m20.017 10.104a2.1862 2.1862 0 0 0-3.6986-1.4974 10.662 10.662 0 0 0-5.765-1.8418l0.97332-4.6719 3.2045 0.67383a1.4974 1.4974 0 1 0 0.19466-0.91342l-3.6687-0.73373a0.4642 0.4642 0 0 0-0.55404 0.35938l-1.1081 5.196a10.692 10.692 0 0 0-5.8399 1.8418 2.1862 2.1862 0 1 0-2.4108 3.5788 4.2976 4.2976 0 0 0 0 0.65886c0 3.3542 3.9082 6.0795 8.7299 6.0795 4.8217 0 8.7299-2.7253 8.7299-6.0795a4.2976 4.2976 0 0 0 0-0.65886 2.1862 2.1862 0 0 0 1.2129-1.9916zm-14.974 1.4974a1.4974 1.4974 0 1 1 1.4974 1.4974 1.4974 1.4974 0 0 1-1.4974-1.4974zm8.6999 4.1179a5.7501 5.7501 0 0 1-3.6986 1.153 5.7501 5.7501 0 0 1-3.6986-1.153 0.4043 0.4043 0 0 1 0.56902-0.56902 4.8965 4.8965 0 0 0 3.1146 0.94337 4.9115 4.9115 0 0 0 3.1296-0.91342 0.41827 0.41827 0 1 1 0.58399 0.59896zm-0.26953-2.5606a1.4974 1.4974 0 1 1 1.4974-1.4974 1.4974 1.4974 0 0 1-1.5124 1.5573z" stroke-width="1.4974"/></svg></a>
+    <a class="mastodon invisible" data-src="{{ page.title }}&amp;url={{ site.url }}{{ pageurl }}" title="{{ site.data.social.language.str_share_on }} Mastodon"><svg viewBox="0 0 61 65" xmlns="http://www.w3.org/2000/svg"><path class="logobg" d="m60.754 14.39c-0.9396-6.984-7.0266-12.488-14.242-13.554-1.2174-0.18021-5.8298-0.83607-16.514-0.83607h-0.0798c-10.688 0-12.98 0.65585-14.198 0.83607-7.0147 1.037-13.421 5.9825-14.975 13.049-0.74757 3.4802-0.82735 7.3385-0.68847 10.878 0.19797 5.0755 0.23638 10.142 0.69734 15.197 0.31867 3.3577 0.87458 6.6886 1.6636 9.9678 1.4774 6.0563 7.458 11.096 13.317 13.152 6.2733 2.1443 13.02 2.5003 19.484 1.0281 0.7111-0.1654 1.4134-0.3574 2.1068-0.5761 1.5719-0.4992 3.4128-1.0576 4.7661-2.0384 0.0186-0.0138 0.0338-0.0316 0.0445-0.052 0.0108-0.0205 0.0168-0.0431 0.0176-0.0662v-4.8982c-4e-4 -0.0216-0.0055-0.0428-0.0151-0.0622-0.0096-0.0193-0.0234-0.0363-0.0404-0.0496s-0.0368-0.0226-0.0579-0.0273c-0.021-0.0047-0.0429-0.0046-0.0639 2e-4 -4.1416 0.9892-8.3856 1.485-12.644 1.4772-7.3279 0-9.2988-3.4772-9.8631-4.9248-0.4537-1.2511-0.7418-2.5562-0.8569-3.882-0.0012-0.0222 0.0029-0.0445 0.0119-0.0649 9e-3 -0.0203 0.0227-0.0383 0.04-0.0524s0.0376-0.024 0.0594-0.0287c0.0218-0.0048 0.0444-0.0043 0.066 0.0013 4.0725 0.9824 8.2473 1.4782 12.437 1.4771 1.0075 0 2.0122 0 3.0198-0.0266 4.2135-0.1182 8.6546-0.3338 12.8-1.1433 0.1034-0.0207 0.2069-0.0384 0.2955-0.065 6.539-1.2556 12.762-5.1966 13.394-15.176 0.0236-0.3929 0.0827-4.1153 0.0827-4.523 0.0029-1.3856 0.4462-9.829-0.065-15.017z"/><path d="m50.394 22.237v17.351h-6.8758v-16.84c0-3.5452-1.4774-5.3532-4.4825-5.3532-3.3035 0-4.9582 2.1389-4.9582 6.3636v9.2174h-6.8344v-9.2174c0-4.2247-1.6577-6.3636-4.9612-6.3636-2.9873 0-4.4795 1.808-4.4795 5.3532v16.84h-6.8729v-17.351c0-3.5452 0.9052-6.3616 2.7155-8.4493 1.8675-2.0828 4.317-3.1522 7.3575-3.1522 3.5192 0 6.1785 1.353 7.9514 4.0562l1.7108 2.8716 1.7138-2.8716c1.7729-2.7032 4.4322-4.0562 7.9455-4.0562 3.0376 0 5.4871 1.0694 7.3604 3.1522 1.8084 2.0857 2.7116 4.9022 2.7096 8.4493z" fill="#fff"/></svg></a>
     <a target="_blank" class="mail" title="Share this through Email" href="mailto:?&body={{ site.url }}{{ pageurl }}"><svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1792 710v794q0 66-47 113t-113 47h-1472q-66 0-113-47t-47-113v-794q44 49 101 87 362 246 497 345 57 42 92.5 65.5t94.5 48 110 24.5h2q51 0 110-24.5t94.5-48 92.5-65.5q170-123 498-345 57-39 100-87zm0-294q0 79-49 151t-122 123q-376 261-468 325-10 7-42.5 30.5t-54 38-52 32.5-57.5 27-50 9h-2q-23 0-50-9t-57.5-27-52-32.5-54-38-42.5-30.5q-91-64-262-182.5t-205-142.5q-62-42-117-115.5t-55-136.5q0-78 41.5-130t118.5-52h1472q65 0 112.5 47t47.5 113z"/></svg></a>
 </div>
